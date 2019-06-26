@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request
 
+import mysql.connector as mc
+
 app = Flask(__name__)
 
 @app.route("/")
@@ -19,6 +21,16 @@ def verifylogin():
 	else:
 		print("ERROR!!")
 	return render_template('index.html')
+
+@app.route("/inventory")
+def show_inventory():
+	mydb = mc.connect(host='localhost', user='webaccess', passwd='cs160mysql', database="RESMGTDB")
+	cur = mydb.cursor()
+	cur.execute("DESCRIBE ingredients;")
+	fields = [row[0] for row in cur]
+	cur.execute("SELECT * FROM ingredients;")
+	data = [row for row in cur]
+	return render_template('inventory.html', fields=fields, data=data)
 
 if __name__ == "__main__":
     app.run()
