@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Menu Manager - Add items</title>
+</head>
+
+<body>
+	<h1>Please describe the item you'd like to add to the menu.</h1>
+
+<!--TODO: input more than item at once-->
+<!--TODO: verify whether we only need Food, Side, and Drink, or whether categories are customizable-->
+	<form action="/add_review" method="POST">
+		Name: <input type="text" name="item_name"> <br>
+		Price: <input type="number" name="item_price" min="0.00" step="0.01"> <br>
+		Category: <select name="item_category">
+			<option value="Food">Food</option>
+			<option value="Side">Side</option>
+			<option value="Drink">Drink</option>
+		</select>
+		<br><br>
+
+		<input type="submit" value="Submit">
+	</form>
+</body>
+
+</html>
