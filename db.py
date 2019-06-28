@@ -1,5 +1,11 @@
 import mysql.connector as mc
 
+# running bug list
+# creation does not check for duplicates.
+# deletion does not fail gracefully if item does not exist in db.
+# RestaurantDB class does not have methods to add/delete/modify orders, users, or recipe tables. 
+
+
 class Database:
 
 	def __init__(self, host, user, passwd, dbname):
@@ -25,7 +31,8 @@ class Database:
 		self.db.close()
 
 	'''Create new entry in specified table. entry is an array of strings'''
-	def create_entry(self, entry, table):
+	def create_entry(self, table, entry):
+
 		fields = self.get_field_names(table)[1:]	# slicing this to not include id since id auto-increments
 
 		sql = "INSERT INTO " + table + " ("
@@ -40,19 +47,48 @@ class Database:
 			if i == len(entry)-1:
 				sql = sql + "%s);"
 			else:
-				sql = sql + "%s, "
-		print(sql)
-		
+				sql = sql + "%s, "	
+	
 		try:
 			self.cur.execute(sql, entry)
-			for x in self.cur:
-				print(x)
+			self.db.commit()
 		except mc.Error as mce:
 			print(mce)
 
-	'''Delete specified entry in specified table'''
-	def delete_entry(self, entry, table):
-		pass
+	'''Delete specified entry in specified table.
+	   deltup is a tuple specifying (field, value),
+	   e.g. (description, "some kinda sauce").'''
+	def delete_entry(self, table, entry):
+
+		sql = 'DELETE FROM ' + table + ' WHERE ' + entry[0] + ' = " ' + entry[1] + '"'
+
+		try:
+			self.cur.execute(sql)
+			self.db.commit()
+		except mc.Error as mce:
+			print(mce)
+
+	'''Update entry in specified table.
+	   Both oldentry and newentry are tuples
+	   specifying (field, value).
+	   E.g. oldentry = ("description", "ketchup")
+	   newentry = ("description", "tomato sauce")
+	   will change the "ketchup" entry in the db
+	   to have a description of "tomato sauce".'''
+	def modify_entry(self, table, oldentry, newentry):
+		
+		sql = 'UPDATE ' + table + ' SET ' + newentry[0] + ' = "' + newentry[1] + \
+		      '" WHERE ' + oldentry[0] + ' = "' + oldentry[1] + '";'
+
+		print(sql)
+
+		try:
+			self.cur.execute(sql)
+			self.db.commit()
+		except mc.Error as mce:
+			print(mce)
+
+
 
 	'''Get description of a table by column, e.g. Field'''
 	def get_field_names(self, table):
@@ -71,8 +107,28 @@ class Database:
 			print(mce)
 
 
-class RestaurantDB:
+class RestaurantDB(Database):
 
-	def __init__():
+	def __init__(self, host):
+		super().__init__(host, "webaccess", "cs160mysql", "RESMGTDB")
+
+	def add_ingredient(self, ingredient):
 		pass
+
+	def delete_ingredient(self, ingredient):
+		pass
+
+	def add_menu_item(self, item):
+		pass
+
+	def delete_menu_item(self, item):
+		pass
+
+
+
+
+
+
+
+
 
