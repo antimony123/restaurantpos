@@ -24,9 +24,31 @@ class Database:
 	def close(self):
 		self.db.close()
 
-	'''Create new entry in specified table'''
+	'''Create new entry in specified table. entry is an array of strings'''
 	def create_entry(self, entry, table):
-		pass
+		fields = self.get_field_names(table)[1:]	# slicing this to not include id since id auto-increments
+
+		sql = "INSERT INTO " + table + " ("
+
+		for i in range(len(entry)):
+			if i == len(entry)-1:
+				sql = sql + fields[i] + ") VALUES ("
+			else:
+				sql = sql + fields[i] + ", "
+
+		for i in range(len(entry)):
+			if i == len(entry)-1:
+				sql = sql + "%s);"
+			else:
+				sql = sql + "%s, "
+		print(sql)
+		
+		try:
+			self.cur.execute(sql, entry)
+			for x in self.cur:
+				print(x)
+		except mc.Error as mce:
+			print(mce)
 
 	'''Delete specified entry in specified table'''
 	def delete_entry(self, entry, table):
