@@ -5,10 +5,33 @@
 </head>
 
 <body>
-	<h1>Under construction.</h1>
+	<h1>Which items would you like to change?</h1>
 
-	<form action="menu_mgt">
-		<input type="submit" value="Return to main menu.">
+	<form action="/price_entry" method="POST">
+		<table style="width:50%">
+			<tr>
+				<th></th>
+				{% for field in fields %}
+		    		<th>{{field}}</th>
+				{% endfor %}
+			</tr>
+			{% for row in data %}
+				<tr>
+					<td>
+						<input type="checkbox" name={{row[0]}}>
+					</td>
+					{% for entry in row %}
+						<td>{{entry}}</td>
+					{% endfor %}
+				</tr>
+			{% endfor %}
+		</table> 
+		<br><br>
+		<input type="submit" value="Submit">
+	</form>
+	<br>
+	<form action="/menu_mgt">
+		<input type="submit" value="Cancel">
 	</form>
 </body>
 
