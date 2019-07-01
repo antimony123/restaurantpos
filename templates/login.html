@@ -8,13 +8,16 @@
 <body>
  
  <h5 style="text-align:center;">Manager Login</h5>
- <form action="/verifylogin" method="POST">
+ <form style="text-align:center;" action="/verifylogin" method="POST">
 	Username: <input type="text" name="username"><br>
 	Password: <input type="text" name="password"><br>
 	<input type="submit" value="Log In">
  </form>
+{% if error %}
+<p style="text-align:center;"> Access denied: incorrect username or password. </p>
+{% endif %}
         <footer class="footer" style="text-align:center">
-            <p>&copy; kill me asap </p>
+            <p>&copy; CS160 Restaurant POS </p>
         </footer>
 </body>
  

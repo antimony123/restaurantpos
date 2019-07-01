@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Menu Manager - Deletion Success!</title>
+</head>
+
+<body>
+	<h1>The item(s) has been successfully deleted! Here's the updated menu.</h1>
+
+	<table style="width:50%">
+	  <tr>
+		{% for field in fields %}
+		    <th>{{field}}</th>
+		{% endfor %}
+	  </tr>
+		{% for row in data %}
+		  <tr>
+			{% for entry in row %}
+			    <td>{{entry}}</td>
+			{% endfor %}
+		  </tr>
+		{% endfor %}
+	</table>
+
+	<br>
+
+	<form action="/menu_mgt">
+		<button type="submit">Return to the main menu.</button>
+</body>
+</html>

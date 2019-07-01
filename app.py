@@ -5,31 +5,43 @@ import db
 app = Flask(__name__)
 resdb = db.RestaurantDB("localhost")
 
+# _manager_logged_in = False
+
 @app.route("/")
 def main():
 	return render_template('index.html')
 
 @app.route("/login")
 def login():
-	return render_template('login.html')
+	return render_template('login.html', error=False)
 
 @app.route("/verifylogin", methods=['POST', 'GET'])
 def verifylogin():
 	if request.method == 'POST':
 		username = request.form['username']
 		password = request.form['password']
-		print(username, password)
-	else:
-		print("ERROR!!")
-	return render_template('index.html')
+		# check with database user/pass that it is correct
 
-@app.route("/menu_mgt")
+		sql = "select * from users where username='manager'"
+		resdb.cur.execute(sql)
+		
+		data = resdb.cur.fetchone()
+		
+		if data[0] == username and data[1] == password:
+			return render_template('managerportal.html')
+		return render_template('login.html', error=True)
+
+
+@app.route("/menu_mgt", methods=["POST", "GET"])
 def main_menu():
-        return render_template("menu_mgt.html")
+	keys = "Menu"
+	if request.method == "POST":
+		keys = [k for k in request.form.keys()]
+	return render_template("menu_mgt.html", table=keys[0])
 
-@app.route("/menu_add")
-def add_item():
-        return render_template("menu_add.html")
+@app.route("/menu_add/<table>")
+def add_item(table):
+        return render_template("menu_add.html", table=table)
 
 @app.route("/add_review", methods=["POST", "GET"])
 def add_review():
@@ -57,14 +69,56 @@ def insert_new_menu_item():
 @app.route("/menu_del")
 def select_to_delete():
 	return render_template("menu_del.html", \
-			fields=resdb.get_field_names("menu"), \
-			data=resdb.get_table_contents("menu"))
+				fields=resdb.get_field_names("menu"), \
+				data=resdb.get_table_contents("menu"))
+
 @app.route("/del_review", methods=["POST", "GET"])
 def delete_review():
-	if request.method == "POST":
-		print([i for i in request.form.keys()])
-	return render_template("del_review.html")
+	if request.method == "POST" :
+		keys = [key for key in request.form.keys()]
 
+		if keys:
+			data_string = "select * from menu where id ="
+			data_string += " || id=".join(keys)
+			data_string += ";"
+		else:
+			data_string = ""
+
+		resdb.cur.execute(data_string)
+		data = [row for row in cur]
+
+		return render_template("del_review.html", keys=keys, fields=resdb.get_field_names("menu"), data=data)
+
+@app.route("/del_final", methods=["POST", "GET"])
+def delete_menu_item() :
+	if request.method == "POST" :
+
+		char_list = []
+		for char in request.form["keys"] :
+			char_list.append(str(char))
+
+		int_list = []
+		write_flag = False
+		new_int = ""
+		for char in char_list :
+			if char == "'" and not write_flag :
+				write_flag = True
+			elif char != "'" and write_flag :
+				new_int += str(char)
+			elif char == "'" and write_flag :
+				int_list.append(new_int)
+				new_int = ""
+				write_flag = False
+
+		sql = "delete from menu where id="
+		sql += " || id=".join(int_list)
+		sql += ";"
+		resdb.cur.execute(sql)
+		resdb.db.commit()
+
+		return render_template("del_final.html", \
+					fields=resdb.get_field_names("menu"), \
+					data=resdb.get_table_contents("menu"))
 
 if __name__ == "__main__":
     app.run()

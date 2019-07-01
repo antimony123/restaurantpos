@@ -8,7 +8,7 @@
 	<h1>Which items would you like to delete?</h1>
 
 	<form action="/del_review" method="POST">
-		<table style="width=50%">
+		<table style="width:50%">
 			<tr>
 				<th></th>
 				{% for field in fields %}
@@ -29,7 +29,10 @@
 		<br><br>
 		<input type="submit" value="Submit">
 	</form>
-
+	<br>
+	<form action="/menu_mgt">
+		<input type="submit" value="Cancel">
+	</form>
 </body>
 
 </html>
