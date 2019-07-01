@@ -12,7 +12,7 @@ my.setcontent()
 
 #from mysql.connector import (errorcode)
 try:
-    cnx = mysql.connector.connect(user='usernamehere', password='passwordhere', host='localhostIP', database='putdatabasehere')
+    cnx = mysql.connector.connect(user='username', password='pwHere', host='localhostIP', database='databaseName')
 
 except mysql.connector.Error as err:
     if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -40,21 +40,24 @@ finally:
     my.startform('reviewpayorder.py')
 
     print("<h4>OrderID :",orderid,"</h4>")
+
+#---Present Maindish-----------------------------------------------------------------
     query = "SELECT * from menu WHERE id = %s "
     args = (mainorder)
     cur.execute(query,(args,))
     for r in cur:
        maindish = r[1]
-    print("<h3>>>>>",guestname," how would you like your ",maindish," today.!</h3>")
+#-------------------------------------------------------------------------------------
 
-#---Present Option with---------------------------------------------------------------
+    print("<h3>..",guestname," how would you like your ",maindish," today.!</h3>")
+
+#---Present Maindish Option with---------------------------------------------------------------
     print("<table style=\"width:100%\">")
     query = "SELECT * from recipes WHERE menu_id = %s AND to_show = 1"
     args = (mainorder)
     cur.execute(query,(args,))
     for r in cur:
         print("<tr><td><input type=\"checkbox\" name=\"detailorder\" value=",r[3],">",r[4],"</td></tr>")
-
     print("</table>")
     print("<br>--------------------------------------------------<br><br>")
     print("<h4>")
@@ -75,7 +78,7 @@ finally:
        drink = r[1]
     print("Your Drinks Order today: ",drink)
     print("<br>--------------------------------------------------<br><br>")
-
+#-----------------------------------------------------------------------------------
     print("<input type='hidden' name='guestname' value=", guestname, ">")
     print("<input type='hidden' name='orderid' value=", orderid,">")
     print("<input type='hidden' name='mainorder' value=", mainorder, ">")
