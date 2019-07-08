@@ -12,8 +12,8 @@ my.setcontent()
 
 #from mysql.connector import (errorcode)
 try:
-    cnx1 = mysql.connector.connect(user='usernameHere', password='pwHere', host='localhostIp', database='databaseName')
-    cnx2 = mysql.connector.connect(user='usernameHere', password='pwHere', host='localhostIP', database='databaseName')
+    cnx1 = mysql.connector.connect(user='username', password='pwHere', host='localhostIP', database='databaseName')
+    cnx2 = mysql.connector.connect(user='username', password='pwHere', host='localhostIP', database='databaseName')
 
 except mysql.connector.Error as err:
     if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
