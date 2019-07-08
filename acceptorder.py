@@ -16,9 +16,9 @@ my.startbody()
 
 #from mysql.connector import (errorcode)
 try:
-    cnx1 = mysql.connector.connect(user='webaccess', password='mysqlcs160', host='127.0.0.1', database='RESMGTDB')
-    cnx2 = mysql.connector.connect(user='webaccess', password='mysqlcs160', host='127.0.0.1', database='RESMGTDB')
-    cnx3 = mysql.connector.connect(user='webaccess', password='mysqlcs160', host='127.0.0.1', database='RESMGTDB')
+    cnx1 = mysql.connector.connect(user='username', password='pwHere', host='localhostIP', database='databaseName')
+    cnx2 = mysql.connector.connect(user='username', password='pwHere', host='localhostIP', database='databaseName')
+    cnx3 = mysql.connector.connect(user='username', password='pwHere', host='localhostIP', database='databaseName')
 
 except mysql.connector.Error as err:
     if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
