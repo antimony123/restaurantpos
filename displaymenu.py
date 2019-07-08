@@ -16,7 +16,7 @@ my.setcontent()
 
 #from mysql.connector import (errorcode) 
 try:
-    cnx = mysql.connector.connect(user='webaccess', password='mysqlcs160', host='127.0.0.1', database='RESMGTDB')
+    cnx = mysql.connector.connect(user='username', password='pwHere', host='localhostIP', database='databaseName')
 
 except mysql.connector.Error as err:
     if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
