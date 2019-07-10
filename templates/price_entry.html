@@ -7,26 +7,26 @@
 <body>
 	<h1>Please enter the new price(s) for the selected item(s).</h1>
 
-	<table style="width:50%">
-		<tr>
-			{% for field in fields %}
-	    		<th>{{field}}</th>
-			{% endfor %}
-			<th>New Price</th>
-		</tr>
-		{% for row in data %}
-			<tr>
-				{% for entry in row %}
-					<td>{{entry}}</td>
-				{% endfor %}
-				<td>
-					<input type="number" name={{row[0]}} min="0.00" step="0.01">
-				</td>
-			</tr>
-		{% endfor %}
-	</table>
-
 	<form action="/price_review", method="POST">
+		<table style="width:50%">
+			<tr>
+				{% for field in fields %}
+	    			<th>{{field}}</th>
+				{% endfor %}
+				<th>New Price</th>
+			</tr>
+			{% for row in data %}
+				<tr>
+					{% for entry in row %}
+						<td>{{entry}}</td>
+					{% endfor %}
+					<td>
+						<input type="number" name={{row[0]}} min="0.00" step="0.01">
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
+		<br>
 		<input type="submit" value="Submit">
 	</form>
 	<br>

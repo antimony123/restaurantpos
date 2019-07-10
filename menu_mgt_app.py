@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session
+import os
 import mysql.connector as mc
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
 
 @app.route("/")
 def main():
@@ -77,17 +79,43 @@ def price_entry():
 		data_string = ""
 
 	cur.execute(data_string)
-
 	data = [row for row in cur]
-	return render_template("price_entry.html", keys=keys, fields=fields, data=data)
+
+	session['price_keys'] = keys
+	session['fields'] = fields
+	session['init_data'] = data
+
+	return render_template("price_entry.html", keys=session['price_keys'], fields=session['fields'], data=session['init_data'])
 
 @app.route("/price_review", methods=["POST", "GET"])
 def price_review():
+	if request.method == "POST" :		
+		prices = [request.form.get(key) for key in session['price_keys']]
+		data_and_prices = [(session['init_data'][i], prices[i]) for i in range(0, len(prices))]
+		session['data_and_prices'] = data_and_prices
+	return render_template("price_review.html", fields=session['fields'], data_and_prices=session['data_and_prices'])
+
+@app.route("/price_retry")
+def price_retry():
+	return render_template("price_entry.html", keys=session['price_keys'], fields=session['fields'], data=session['init_data'])
+
+@app.route("/price_final", methods=["POST", "GET"])
+def change_price():
 	if request.method == "POST" :
+		mydb = mc.connect(host="localhost", user="webaccess", passwd="cs160mysql", database="RESMGTDB")
+		cur = mydb.cursor()
 
-# TODO: price_entry acquires data by using input type="number". Where does it go, and how do I use it?		
+#		TODO: This loop is hardcoded to work for editing the menu table. Edit it to work for ingredients, as well.
+		for entry in session['data_and_prices'] :
+			sql = "update menu set price = %s where id = %s;"
+			val = (entry[1], entry[0][0])
+			cur.execute(sql, val)
+			mydb.commit()
 
-	return render_template("price_review.html")
+		cur.execute("select * from menu;")
+		data = [row for row in cur]
+
+	return render_template("price_final.html", fields=session['fields'], data=data)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Deletion Handling~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -124,6 +152,9 @@ def delete_review():
 		cur.execute(data_string)
 		data = [row for row in cur]
 
+		session['del_keys'] = keys
+		session['fields'] = fields
+
 		return render_template("del_review.html", keys=keys, fields=fields, data=data)
 
 @app.route("/del_final", methods=["POST", "GET"])
@@ -131,37 +162,21 @@ def delete_menu_item() :
 	if request.method == "POST" :
 		mydb = mc.connect(host="localhost", username="webaccess", passwd="cs160mysql", database="RESMGTDB")
 		cur = mydb.cursor()
-
-		char_list = []
-		for char in request.form["keys"] :
-			char_list.append(str(char))
-
-		int_list = []
-		write_flag = False
-		new_int = ""
-		for char in char_list :
-			if char == "'" and not write_flag :
-				write_flag = True
-			elif char != "'" and write_flag :
-				new_int += str(char)
-			elif char == "'" and write_flag :
-				int_list.append(new_int)
-				new_int = ""
-				write_flag = False
+		
+		keys = session['del_keys']
+		print(keys)
 
 		sql = "delete from menu where id="
-		sql += " || id=".join(int_list)
+		sql += " || id=".join(keys)
 		sql += ";"
 		cur.execute(sql)
 
 		mydb.commit()
 
-		cur.execute("describe menu;")
-		fields = [row[0] for row in cur]
 		cur.execute("select * from menu;")
 		data = [row for row in cur]
 
-		return render_template("del_final.html", fields=fields, data=data)
+		return render_template("del_final.html", fields=session['fields'], data=data)
 
 if __name__ == "__main__":
     app.run()
