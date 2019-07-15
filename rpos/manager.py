@@ -13,7 +13,7 @@ bp = Blueprint('manager', __name__, url_prefix='/manager')
 
 @bp.route('/db')
 def db():
-    print(User.__table__.columns.get())
+    print(User.__table__.columns)
     return User.query.all()[0].username
 
 

@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 import os
 
 from flask import Flask
@@ -29,7 +27,7 @@ def create_app(test_config=None):
     # a simple page that says hello
     @app.route('/')
     def index():
-        return 'fuck you'
+        return 'hello'
 
     from . import db
     @app.teardown_appcontext
@@ -39,6 +37,12 @@ def create_app(test_config=None):
 
     from . import manager
     app.register_blueprint(manager.bp)
+
+    from . import customer
+    app.register_blueprint(customer.bp)
+
+    from . import auth
+    app.register_blueprint(auth.bp)
 
     return app
 
