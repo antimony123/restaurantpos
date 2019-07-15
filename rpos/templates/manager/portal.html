@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+ 
+<head>
+    <title>POS Manager Portal</title>
+</head>
+ 
+<body>
+ 
+ <h3 style="text-align:center;">Welcome, Manager!</h3>
+
+    <div class="tabletabs">
+        {% for table in tables %}
+            {% if table == curtab %}
+                <a class='active' href='/manager/{{table}}'> {{table}} </a>
+            {% else %}
+                <a href='/manager/{{table}}'> {{table}} </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <table>
+        <tr>
+            <th></th>
+            {% for field in fields %}
+                <th>{{field}}</th>
+            {% endfor %}
+        </tr>
+        {% for row in contents %}
+            {% set outer_loop = loop %}
+            <tr>
+                <td>
+                    <input type="checkbox" name=''>
+                </td>
+                {% for entry in row %}
+                        <td><input class="{{ outer_loop.cycle('even', 'odd') }}" type="text" value="{{entry}}""></input></td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+    <!-- options for delete items, edit items, add items, and bulk edit -->
+    
+	<!-- <input type= -->
+
+</body>
+
+<footer>
+    <p>&copy; CS160 Restaurant POS </p>
+</footer>
+ 
+</html>
+
