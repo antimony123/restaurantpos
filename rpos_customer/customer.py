@@ -28,7 +28,7 @@ def displaymenu():
         session['guestname'] = request.form['guestname']
         session['orderid'] = request.form['orderid']
 
-        cnx = mysql.connect(user='root', password='12345678', host='127.0.0.1', database='RESMGTDB')
+        cnx = mysql.connect(user='root', password='putpwhere', host='127.0.0.1', database='RESMGTDB')
         cur = cnx.cursor()
 
         cur.execute("SELECT * from menu WHERE category='Food'")
