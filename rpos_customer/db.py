@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-engine = create_engine('mysql+pymysql://root:12345678@localhost:3306/RESMGTDB') #, convert_unicode=True)
+engine = create_engine('mysql+pymysql://root:putpwhere@localhost:3306/RESMGTDB') #, convert_unicode=True)
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))
