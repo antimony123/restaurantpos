@@ -49,7 +49,7 @@ def customizeorder():
         session['sideorder'] = request.form['sideorder']
         session['drinkorder'] = request.form['drinkorder']
 
-        cnx = mysql.connect(user='root', password='12345678', host='127.0.0.1', database='RESMGTDB')
+        cnx = mysql.connect(user='root', password='putpwhere', host='127.0.0.1', database='RESMGTDB')
         cur = cnx.cursor()
 
         #query = "select * FROM menu WHERE id = %s "
