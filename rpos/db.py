@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-engine = create_engine('mysql+mysqldb://webaccess:cs160mysql@localhost:3306/RESMGTDB') #, convert_unicode=True)
+engine = create_engine('mysql+pymysql://webaccess:cs160mysql@localhost:3306/RESMGTDB') #, convert_unicode=True)
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))

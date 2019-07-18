@@ -22,7 +22,7 @@ def portal():
     return redirect(url_for('manager.portaltable', table='Menu'))
 
 
-@bp.route('/<string:table>')
+@bp.route('/<string:table>', methods=['GET', 'POST'])
 def portaltable(table):
 
     error = None
@@ -31,6 +31,7 @@ def portaltable(table):
     if table not in tables:
         error = "No table named " + table + " exists in the database."
         table = 'Menu'
+        redirect(url_for('manager.portaltable', table='Menu'))
 
     tabobj = {
         "Ingredients" : Ingredient,
@@ -40,6 +41,35 @@ def portaltable(table):
     }.get(table)
 
     fields = tabobj.__table__.columns.keys()
+
+    if request.method == 'POST':
+
+        # add row
+        if ('add' in request.form.keys()
+            and 'update' not in request.form.keys()
+            and 'delete' not in request.form.keys()):
+
+                new_item = tabobj()
+                db_session.add(new_item)
+                db_session.commit()
+                redirect(url_for('manager.portaltable', table=table))
+
+        # delete selected items
+        elif ('delete' in request.form.keys()
+            and 'add' not in request.form.keys()
+            and 'update' not in request.form.keys()):
+
+                ids = [int(k[9:]) for k in request.form.keys() if 'checkbox_' in k]
+        # update
+        elif ('update' in request.form.keys()
+            and 'add' not in request.form.keys()
+            and 'delete' not in request.form.keys()):
+
+                print('updated db')
+        else:
+            pass
+
+        # print([k for k in request.form.keys()])
 
     types = ""
 

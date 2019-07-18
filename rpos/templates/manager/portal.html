@@ -21,26 +21,38 @@
         {% endfor %}
     </div>
 
-    <table>
-        <tr>
-            <th></th>
-            {% for field in fields %}
-                <th>{{field}}</th>
-            {% endfor %}
-        </tr>
-        {% for row in contents %}
-            {% set outer_loop = loop %}
+    <form method='post'>
+        <table>
             <tr>
-                <td>
-                    <input type="checkbox" name=''>
-                </td>
-                {% for entry in row %}
-                        <td><input class="{{ outer_loop.cycle('even', 'odd') }}" type="text" value="{{entry}}""></input></td>
+                <th></th>
+                {% for field in fields %}
+                    <th>{{field}}</th>
                 {% endfor %}
             </tr>
-        {% endfor %}
-    </table>
-    <!-- options for delete items, edit items, add items, and bulk edit -->
+                {% for row in contents %}
+                    {% set outer_loop = loop %}
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="checkbox_{{loop.index}}"></input>
+                        </td>
+                        {% for entry in row %}
+                                <td><input class="{{ outer_loop.cycle('even', 'odd') }}" 
+                                           type="text" 
+                                           value="{{entry}}" 
+                                           name="{{fields[loop.index-1]}}_{{outer_loop.index}}" ">
+                                    </input></td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+        </table>
+
+        <!-- options for delete items, edit items, add items, and bulk edit -->
+
+        <input type="submit" value="Add row" name="add"></input>
+        <input type="submit" value="Delete Selected Items" name="delete"></input>
+        <input type="submit" value="Update table" name="update"></input>
+        
+    </form>
     
 	<!-- <input type= -->
 

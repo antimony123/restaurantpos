@@ -3,6 +3,8 @@ from sqlalchemy.dialects.mysql import DECIMAL, INTEGER, TIMESTAMP, TINYINT, VARC
 
 from rpos.db import Base
 
+import string, random
+
 class Ingredient(Base):
     __tablename__ = 'ingredients'
     id = Column(INTEGER(11), primary_key=True)
@@ -11,7 +13,7 @@ class Ingredient(Base):
     unit = Column(VARCHAR(50), nullable=False)
     cost = Column(DECIMAL(precision=10, scale=2, unsigned=True, zerofill=True), nullable=False)
 
-    def __init__(self, description=None, stock=0.0, unit='piece', cost=0.00):
+    def __init__(self, description='New Item', stock=0.0, unit='piece', cost=0.00):
         self.description = description
         self.stock = stock
         self.unit = unit
@@ -28,7 +30,7 @@ class MenuItem(Base):
     price = Column(DECIMAL(precision=10, scale=2, unsigned=True, zerofill=True), nullable=False)
     category = Column(VARCHAR(10), nullable=False)
 
-    def __init__(self, description=None, price=0, category=None, cost=0):
+    def __init__(self, description='New Item', price=0, category='Food', cost=0):
         self.description = description
         self.price = price
         self.category = category
@@ -60,18 +62,19 @@ class Recipe(Base):
 
 class User(Base):
     __tablename__ = 'users'
-    # id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     username = Column(VARCHAR(10), unique=True, nullable=False, primary_key=True)
-    password = Column(VARCHAR(20148), nullable=True)
+    password = Column(VARCHAR(2048), nullable=True)
     active = Column(INTEGER(1), nullable=True)
 
     def __init__(self, username=None, password=None, active=0):
-        self.username = username
+        self.username = "User " + ''.join(random.choice(string.ascii_lowercase) for i in range(5))
         self.password = password
         self.active = active
 
     def __repr__(self):
         return '<User %r>' % (self.username)
+
 
 class Order(Base):
     __tablename__ = 'orders'
