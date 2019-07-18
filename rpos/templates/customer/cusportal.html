@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
+
+<head>
+    <h1>Please Enter your Name</h1>
+</head>
+
+<body>
+      <form action="/customer/displaymenu", method="POST">
+        Firstname: <input type='text' name='guestname', required><br>
+        <input type='hidden' name='orderid' value={{orderid}}><br><br>
+        <input type='submit' value='Press Here to View and Select from our Menu'>
+        <br><br>{{orderid}}
+      </form>
+</body>
+
+
+
+<footer>
+    <p>&copy; CS160 Restaurant POS </p>
+</footer>
+
+</html>
