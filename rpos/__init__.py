@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, redirect, url_for
 
 def create_app(test_config=None):
     # create and configure the app
@@ -27,7 +27,7 @@ def create_app(test_config=None):
     # a simple page that says hello
     @app.route('/')
     def index():
-        return 'hello'
+        return redirect(url_for('auth.login'))
 
     from . import db
     @app.teardown_appcontext

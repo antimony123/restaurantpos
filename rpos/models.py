@@ -63,14 +63,14 @@ class Recipe(Base):
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
-    username = Column(VARCHAR(10), unique=True, nullable=False, primary_key=True)
+    username = Column(VARCHAR(10), unique=True, nullable=False)
     password = Column(VARCHAR(2048), nullable=True)
-    active = Column(INTEGER(1), nullable=True)
+    isadmin = Column(TINYINT(4), nullable=False)
 
-    def __init__(self, username=None, password=None, active=0):
+    def __init__(self, username=None, password=None, isadmin=0):
         self.username = "User " + ''.join(random.choice(string.ascii_lowercase) for i in range(5))
         self.password = password
-        self.active = active
+        self.isadmin = isadmin
 
     def __repr__(self):
         return '<User %r>' % (self.username)

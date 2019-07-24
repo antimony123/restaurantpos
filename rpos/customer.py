@@ -12,6 +12,9 @@ import string, random, os
 bp = Blueprint('customer', __name__, url_prefix='/customer')
 bp.secret_key = os.urandom(24)
 
+cnx = mysql.connect(user='webaccess', password='cs160mysql', host='127.0.0.1', database='RESMGTDB')
+cur = cnx.cursor()
+
 def randomString(stringLength=20):
     """Generate a random string of fixed length """
     letters = string.ascii_lowercase
@@ -27,9 +30,6 @@ def displaymenu():
     if request.method == "POST" :
         session['guestname'] = request.form['guestname']
         session['orderid'] = request.form['orderid']
-
-        cnx = mysql.connect(user='root', password='putpwhere', host='127.0.0.1', database='RESMGTDB')
-        cur = cnx.cursor()
 
         cur.execute("SELECT * from menu WHERE category='Food'")
         food_table = [row for row in cur]
@@ -48,9 +48,6 @@ def customizeorder():
         session['mainorder'] = request.form['mainorder']
         session['sideorder'] = request.form['sideorder']
         session['drinkorder'] = request.form['drinkorder']
-
-        cnx = mysql.connect(user='root', password='putpwhere', host='127.0.0.1', database='RESMGTDB')
-        cur = cnx.cursor()
 
         #query = "select * FROM menu WHERE id = %s "
         #args = session['mainorder']

@@ -5,8 +5,8 @@ from flask import (
 )
 
 from rpos.models import Ingredient, MenuItem, Recipe, User
-
 from rpos.db import db_session
+
 from sqlalchemy.sql import select
 
 bp = Blueprint('manager', __name__, url_prefix='/manager')
@@ -26,21 +26,22 @@ def portal():
 def portaltable(table):
 
     error = None
-    tables = ['Menu', 'Ingredients', 'Recipes', 'Users']
+    tables = ['Menu', 'Ingredients', 'Recipes']
 
     if table not in tables:
         error = "No table named " + table + " exists in the database."
         table = 'Menu'
         redirect(url_for('manager.portaltable', table='Menu'))
 
-    tabobj = {
+    tabobj = {      # the object representing both the table and the type of object the table stores
         "Ingredients" : Ingredient,
         "Menu" : MenuItem,
         "Recipes" : Recipe,
-        "Users" : User,
     }.get(table)
 
-    fields = tabobj.__table__.columns.keys()
+    tab = tabobj.__table__      # the actual table part of the declarative object
+
+    fields = tab.columns.keys()
 
     if request.method == 'POST':
 
@@ -59,7 +60,17 @@ def portaltable(table):
             and 'add' not in request.form.keys()
             and 'update' not in request.form.keys()):
 
-                ids = [int(k[9:]) for k in request.form.keys() if 'checkbox_' in k]
+                sql = "DELETE FROM " + tabobj.__tablename__ + " WHERE id = "
+
+                for k in request.form.keys():
+                    if 'checkbox_' in k:
+                        id = k[9:]
+                        sql += id + " or id = "
+
+                sql = sql[:-9] + ";"
+                db_session.execute(sql)
+                db_session.commit()
+
         # update
         elif ('update' in request.form.keys()
             and 'add' not in request.form.keys()
@@ -69,36 +80,42 @@ def portaltable(table):
         else:
             pass
 
-        # print([k for k in request.form.keys()])
+    types = [repr(i.type).split('(')[0].lower() for i in tab.c] # god i'm sorry for this ugly shit
+    types = types[1:] # ignore the id type
+    print(types)
 
-    types = ""
-
-    contents = db_session.execute(select([tabobj.__table__]))
+    cont = db_session.execute(select([tab]))
 
     if fields[0] == 'id':
         fields = fields[1:]
-        contents = [i[1:] for i in contents]
+        idarr = []
+        contents = []
+        for i in cont:
+            idarr.append(i[0])
+            contents.append(i[1:])
 
-    # if table == 'Ingredients':
-    #     fields = ['Name', 'Price', 'Quantity']
-    #     types = ['string', 'decimal']
-    #     contents = [['Cheese', 3.00, 10],
-    #                 ['Hamburger bun', 2.75, 20],
-    #                 ['Hamburger patty', 4.25, 15]]
-    # else:
-    #     fields = ['Just', 'Some', 'Fields']
-    #     types = ['string', 'decimal']
-    #     contents = [['queso', 'is', 'good'],
-    #                 ['chicken coop', 'swoop', 'di woop'],
-    #                 ['bloop', 'no', 2390]]
+    catdrop = [i for i in db_session.execute("select category from menu union select category from menu;")]
+    unitdrop = [i for i in db_session.execute("select unit from ingredients union select unit from ingredients;")]
+    menudrop = [i for i in db_session.execute("select description from menu;")]
+    ingdrop = [i for i in db_session.execute("select description from ingredients;")]
 
     return render_template('manager/portal.html',
                             curtab=table,
                             tables=tables,
+                            idarr=idarr,
                             fields=beautify_arr(fields),
                             types=types,
                             contents=contents,
+                            catdrop=catdrop,
+                            unitdrop=unitdrop,
+                            menudrop=menudrop,
+                            ingdrop=ingdrop,
                             error=error)
+
+@bp.route('/Users')
+def users():
+    return "Users editing"
+
 
 def beautify(s):
     s = s.replace('_', ' ')
