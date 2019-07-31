@@ -1,15 +1,33 @@
 #!/usr/bin/python3
 
+import bcrypt
+
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
 
 from rpos.models import Ingredient, MenuItem, Recipe, User
 from rpos.db import db_session
+from rpos.auth import login_required, manager_login_required
+from rpos.utils import *
 
 from sqlalchemy.sql import select
 
 bp = Blueprint('manager', __name__, url_prefix='/manager')
+tables = ['Menu', 'Ingredients', 'Recipes']
+
+# prefilling fieldmap with table values
+fieldmap = {'Menu description' : 'menu_description',
+            'Ingredient description' : 'ingredient_description',
+            'Ingredient quantity' : 'ingredient_quantity',
+            'Show in menu?' : 'to_show',
+            'Description': 'description',
+            'Stock': 'stock',
+            'Unit': 'unit',
+            'Cost':'cost',
+            'Price': 'price',
+            'Category': 'category',
+            'Low threshold': 'low_threshold'}
 
 @bp.route('/db')
 def db():
@@ -21,12 +39,12 @@ def db():
 def portal():
     return redirect(url_for('manager.portaltable', table='Menu'))
 
-
 @bp.route('/<string:table>', methods=['GET', 'POST'])
+@login_required
 def portaltable(table):
 
     error = None
-    tables = ['Menu', 'Ingredients', 'Recipes']
+    ingunitmap = {}
 
     if table not in tables:
         error = "No table named " + table + " exists in the database."
@@ -76,13 +94,18 @@ def portaltable(table):
             and 'add' not in request.form.keys()
             and 'delete' not in request.form.keys()):
 
-                print('updated db')
+                # strip request keys from singular words
+                reqkeys = [i for i in request.form.keys()]
+                reqkeys.remove('update')
+                # generate rows, dict of id:['request key_1', 'request key_2', ...]
+                idd = generate_rows(reqkeys)
+                queries = sql_query_from_dict(table.lower(), idd, fieldmap, request.form)
+                print(queries)
         else:
             pass
 
     types = [repr(i.type).split('(')[0].lower() for i in tab.c] # god i'm sorry for this ugly shit
     types = types[1:] # ignore the id type
-    print(types)
 
     cont = db_session.execute(select([tab]))
 
@@ -94,10 +117,20 @@ def portaltable(table):
             idarr.append(i[0])
             contents.append(i[1:])
 
-    catdrop = [i for i in db_session.execute("select category from menu union select category from menu;")]
-    unitdrop = [i for i in db_session.execute("select unit from ingredients union select unit from ingredients;")]
-    menudrop = [i for i in db_session.execute("select description from menu;")]
-    ingdrop = [i for i in db_session.execute("select description from ingredients;")]
+    # exclude the menu and ingredient ids
+    if table == 'Recipes':
+        sql = "select menu_description, ingredient_description, ingredient_quantity, to_show from recipes;"
+        contents = [i for i in db_session.execute(sql)]
+        fields = ['Menu description', 'Ingredient description', 'Ingredient quantity', 'Show in menu?']
+        types = ['varchar', 'varchar', 'decimal', 'tinyint']
+        # get ingredient:unit map
+        ingunitmap = {i[0]:i[1] for i in db_session.execute("select description, unit from ingredients;")}
+    
+
+    catdrop = [i[0] for i in db_session.execute("select category from menu union select category from menu;")]
+    unitdrop = [i[0] for i in db_session.execute("select unit from ingredients union select unit from ingredients;")]
+    menudrop = [i[0] for i in db_session.execute("select description from menu;")]
+    ingdrop = [i[0] for i in db_session.execute("select description from ingredients;")]
 
     return render_template('manager/portal.html',
                             curtab=table,
@@ -110,18 +143,72 @@ def portaltable(table):
                             unitdrop=unitdrop,
                             menudrop=menudrop,
                             ingdrop=ingdrop,
+                            ingunitmap=ingunitmap,
                             error=error)
 
 @bp.route('/Users')
+@manager_login_required
 def users():
-    return "Users editing"
+    return redirect(url_for('manager.adduser'))
 
+@bp.route('/AddUser', methods=['POST', 'GET'])
+@manager_login_required
+def adduser():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        confpass = request.form['confpass']
+        print(username, " ", password, " ", confpass)
+        error = None
+        users = [i[0] for i in db_session.execute("SELECT username FROM users;")]
+        print(users)
 
-def beautify(s):
-    s = s.replace('_', ' ')
-    return s[0].upper() + s[1:]
+        if username in users:
+            error = "Username exists."
+        elif password != confpass:
+            error = "Passwords don't match."
+        else:
 
-def beautify_arr(arr):
-    for i in range(len(arr)):
-        arr[i] = beautify(arr[i])
-    return arr
+            salt = bcrypt.gensalt()
+            hashpass = bcrypt.hashpw(password.encode(), salt)
+            print(hashpass)
+
+            sql = "INSERT INTO users (username, password, isadmin) VALUES ('" + username + "', '" + hashpass.decode() + "', 0);"
+            db_session.execute(sql)
+            db_session.commit()
+
+            error = "User successfully added."
+
+        flash(error)
+    
+    return render_template('manager/adduser.html', tables=tables)
+
+@bp.route('/DelUser', methods=['POST', 'GET'])
+@manager_login_required
+def deluser():
+
+    if request.method == 'POST':
+        if ('delete' in request.form.keys()):
+
+                sql = "DELETE FROM " + User.__tablename__ + " WHERE id = "
+
+                for k in request.form.keys():
+                    if 'checkbox_' in k:
+                        id = k[9:]
+                        sql += id + " or id = "
+
+                sql = sql[:-9] + ";"
+                db_session.execute(sql)
+                db_session.commit()
+
+    sql = "SELECT * FROM users;"
+    contents = [i[:2] for i in db_session.execute(sql)][1:] # the manager can never be deleted
+    print(contents)
+
+    return render_template('manager/deluser.html', tables=tables,
+                                                   contents=contents)
+
+@bp.route('/reports')
+@login_required
+def reports():
+    return render_template('manager/reports.html', tables=tables)

@@ -1,5 +1,7 @@
+#!/usr/bin/python3
+
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.dialects.mysql import DECIMAL, INTEGER, TIMESTAMP, TINYINT, VARCHAR
+from sqlalchemy.dialects.mysql import DATETIME, DECIMAL, INTEGER, TINYINT, VARCHAR
 
 from rpos.db import Base
 
@@ -12,12 +14,14 @@ class Ingredient(Base):
     stock = Column(DECIMAL(precision=10, scale=2, unsigned=True, zerofill=True), nullable=False)
     unit = Column(VARCHAR(50), nullable=False)
     cost = Column(DECIMAL(precision=10, scale=2, unsigned=True, zerofill=True), nullable=False)
+    low_threshold = Column(INTEGER(3), nullable=False)
 
-    def __init__(self, description='New Item', stock=0.0, unit='piece', cost=0.00):
+    def __init__(self, description='New Item', stock=0.0, unit='oz', cost=0.00, low_threshold=100):
         self.description = description
         self.stock = stock
         self.unit = unit
         self.cost = cost
+        self.low_threshold = low_threshold
 
     def __repr__(self):
         return '<Ingredient %r>' % (self.description)
@@ -42,7 +46,7 @@ class Recipe(Base):
     __tablename__ = 'recipes'
     id = Column(INTEGER(11), primary_key=True)
     menu_id = Column(INTEGER(11))
-    menu_desciption = Column(VARCHAR(256))
+    menu_description = Column(VARCHAR(256))
     ingredient_id = Column(INTEGER(11))
     ingredient_description = Column(VARCHAR(256))
     ingredient_quantity = Column(DECIMAL(precision=10, scale=2, unsigned=True, zerofill=True))
@@ -78,7 +82,7 @@ class User(Base):
 
 class Order(Base):
     __tablename__ = 'orders'
-    item_id = Column(INTEGER(11), primary_key=True)
+    id = Column(INTEGER(11), primary_key=True)
     orderid = Column(VARCHAR(20), nullable=False)
     guestname = Column(VARCHAR(256), nullable=False)
     mainorder = Column(INTEGER(11), nullable=False)
@@ -86,7 +90,7 @@ class Order(Base):
     quantity = Column(DECIMAL(precision=10, scale=2))
     active = Column(TINYINT(4), nullable=False)
     completed = Column(TINYINT(4), nullable=False)
-    order_time = Column(TIMESTAMP, nullable=False, default='CURRENT_TIMESTAMP')
+    ordertime = Column(DATETIME)
 
     def __init__(self, orderid=None, guestname=None, mainorder=None, detail=None, quantity=None, active=0, completed=0, order_time=None):
         self.orderid = orderid

@@ -1,12 +1,11 @@
 <!doctype html>
 <title> Manager Login </title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
 <nav style='text-align: right'>
     {% if g.user %}
       <span>{{ g.user['username'] }}</span>
+      <a href="{{url_for('manager.portaltable', table='Menu')}}">Portal</a>
       <a href="{{ url_for('auth.logout') }}">Log Out</a>
-    {% else %}
-      <a href="{{ url_for('auth.login') }}">Log In</a>
     {% endif %}
 </nav>
 

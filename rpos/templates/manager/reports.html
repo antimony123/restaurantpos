@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+ 
+<head>
+    <title>POS Manager Portal</title>
+</head>
+
+<nav style='text-align: right'>
+    {% if g.user %}
+      <span>{{ g.user['username'] }}</span>
+      <a href="{{url_for('manager.portaltable', table='Menu')}}">Portal</a>
+      <a href="{{ url_for('auth.logout') }}">Log Out</a>
+    {% endif %}
+</nav>
+
+<body>
+ 
+    <h3 style="text-align:center;">Welcome, Manager!</h3>
+   
+       <div class="tabletabs">
+           {% for table in tables %}
+                <a href='/manager/{{table}}'> {{table}} </a>
+           {% endfor %}
+                <a href='/manager/lowthreshold'> Low Threshold </a>
+                <a class='active' href='/manager/reports'> Reports </a>
+           {% if g.user.isadmin %}
+                <a href='/manager/Users'> Users </a>
+           {% endif %}
+       </div>
+
+    <p>Order reports for the following time period:</p>
+
+</body>
+
+<footer>
+    <p>&copy; CS160 Restaurant POS </p>
+</footer>
+ 
+</html>
