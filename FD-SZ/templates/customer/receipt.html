@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+	<h2>Thank you for your order!</h2>
+	<p>Your name will be called when your food is ready.
+		<br>Thank you for dining with us, {{guestname}}!
+		<br>
+		<br>
+		<h4>Order received at: {{ordertime}}</h4>
+		<h4>OrderID :{{orderid}}</h4>
+        --------------------------------------------------------------------------------<br>
+        <table>
+        <col width="400"><col width="30">
+
+	        <tr><td>{{main_order_tuple[0]}}</td><td>{{main_order_tuple[1]}}</td></tr>
+
+    	    {% for detail in detail_list %}
+      		  	<tr><td>-->{{detail}}</td></tr>
+       		{% endfor %}
+
+        	{% for entry in side_tuples %}
+        		<tr><td>{{entry[0]}}</td><td>{{entry[1]}}</td></tr>
+        	{% endfor %}
+
+        	{% for entry in drink_tuples %}
+        		<tr><td>{{entry[0]}}</td><td>{{entry[1]}}</td></tr>
+        	{% endfor %}
+
+        </table>
+    	--------------------------------------------------------------------------------<br>
+    	<h3>Your Total amount today : {{totalorder}}</h3>
+    </p>
+
+    <button onclick="printReceipt()">Print receipt</button>
+	<script>
+		function printReceipt() {
+			window.print();
+		}
+	</script>
+</body>
+
+</html>
