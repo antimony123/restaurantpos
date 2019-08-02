@@ -89,3 +89,17 @@ INSERT INTO `recipes` VALUES
   (30,1,'Signature Hamburger',28,'Well Done Cooked',0000000.00,1),
   (31,1,'Signature Hamburger',29,'Medium Well Cooked',0000000.00,1);
 UNLOCK TABLES;
+
+LOCK TABLES `orders` WRITE;
+INSERT INTO `orders` VALUES
+  (1, '2019-07-30 17:48:56', 'wynjutgwotxygrggsygv', 'Jimothy McButts', 1,  4,1),
+  (2, '2019-07-30 17:48:56', 'wynjutgwotxygrggsygv', 'Jimothy McButts', 1,  5,1),
+  (3, '2019-07-30 17:48:56', 'wynjutgwotxygrggsygv', 'Jimothy McButts', 1,  6,1),
+  (4, '2019-07-30 17:48:56', 'wynjutgwotxygrggsygv', 'Jimothy McButts', 1,  7,2),
+  (5, '2019-07-30 17:48:56', 'wynjutgwotxygrggsygv', 'Jimothy McButts', 1,  1,1),
+  (6, '2019-07-30 17:48:56', 'wynjutgwotxygrggsygv', 'Jimothy McButts', 1,  2,1),
+  (7, '2019-07-30 17:48:56', 'wynjutgwotxygrggsygv', 'Jimothy McButts', 4, 19,8),
+  (8, '2019-07-30 17:48:56', 'wynjutgwotxygrggsygv', 'Jimothy McButts', 6, 21,1)
+  (9, '2019-07-30 17:43:56', 'hsdjhgsdsyudsdghsjdh', 'Jim Mothy McButtes', 4, 19,8),
+  (10, '2019-07-31 16:48:56', 'ccvbnmcjkvcvhcvjchvc', 'Jimoth E. Mac Butts', 4, 19,8);
+UNLOCK TABLE;

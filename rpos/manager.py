@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import bcrypt
+import bcrypt, datetime
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
@@ -28,12 +28,6 @@ fieldmap = {'Menu description' : 'menu_description',
             'Price': 'price',
             'Category': 'category',
             'Low threshold': 'low_threshold'}
-
-@bp.route('/db')
-def db():
-    print(User.__table__.columns)
-    return User.query.all()[0].username
-
 
 @bp.route('/')
 def portal():
@@ -203,12 +197,81 @@ def deluser():
 
     sql = "SELECT * FROM users;"
     contents = [i[:2] for i in db_session.execute(sql)][1:] # the manager can never be deleted
-    print(contents)
 
     return render_template('manager/deluser.html', tables=tables,
                                                    contents=contents)
 
-@bp.route('/reports')
+@bp.route('/lowthreshold')
+@login_required
+def lowthreshold():
+
+    sql = "SELECT description, stock, unit, low_threshold FROM ingredients WHERE stock < low_threshold;"
+    contents = [i for i in db_session.execute(sql)]
+
+    return render_template('manager/lowthreshold.html', tables=tables, contents=contents)
+
+
+@bp.route('/reports', methods=['POST', 'GET'])
 @login_required
 def reports():
-    return render_template('manager/reports.html', tables=tables)
+    odict = {}
+    total_ing_cost = 0
+    total_income = 0
+
+    dt = [i[0] for i in db_session.execute("SELECT ordertime FROM orders;")]
+    d, t = str(sorted(dt)[0]).split(' ')
+    mindt = (d, t)
+    d, t = str(sorted(dt)[-1]).split(' ')
+    maxdt = (d, t)
+
+    startdate = mindt[0]
+    starttime = mindt[1]
+    enddate = maxdt[0]
+    endtime = maxdt[1]
+
+    sql = "SELECT * FROM orders;"
+
+    if request.method == 'POST':
+        startdate = request.form['startdate']
+        starttime = request.form['starttime']
+        enddate = request.form['enddate']
+        endtime = request.form['endtime']
+
+        sql = "SELECT * FROM orders WHERE ordertime >= '" + startdate + ' ' + starttime + \
+                                    "' and ordertime <= '" + enddate + ' ' + endtime + "';"
+
+    orders = [i for i in db_session.execute(sql)]
+
+    for i in orders:
+        _, otime, oid, gname, menuid, ingid, quantity = i
+        if oid not in odict.keys():
+            odict[oid] = {'otime': otime,
+                            'gname': gname,
+                            'menuitems': {},
+                            'ingredients': [],
+                            'ototal': 0,
+                            'ingcost': 0}
+        
+        if menuid not in odict[oid]['menuitems'].keys():
+            mdesc, mcost = [i for i in db_session.execute("select description, price from menu where id=" + str(menuid) + ";")][0]
+            odict[oid]['menuitems'][menuid] = mdesc
+            odict[oid]['ototal'] += mcost
+            total_income += mcost
+
+        idesc, icost = [i for i in db_session.execute("select description, cost from ingredients where id=" + str(ingid) + ";")][0]
+        odict[oid]['ingredients'].append(idesc + " (" + str(quantity) + ")")
+        item_ing_cost = (icost * quantity)
+        odict[oid]['ingcost'] += item_ing_cost
+        total_ing_cost += item_ing_cost
+
+    return render_template('manager/reports.html', 
+                                    tables=tables, 
+                                    mindt=mindt, 
+                                    maxdt=maxdt,
+                                    startdate=startdate,
+                                    starttime=starttime,
+                                    enddate=enddate,
+                                    endtime=endtime,
+                                    orders=odict,
+                                    total_ing_cost=total_ing_cost,
+                                    total_income=total_income)

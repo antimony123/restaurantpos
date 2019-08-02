@@ -83,24 +83,20 @@ class User(Base):
 class Order(Base):
     __tablename__ = 'orders'
     id = Column(INTEGER(11), primary_key=True)
+    ordertime = Column(DATETIME)
     orderid = Column(VARCHAR(20), nullable=False)
     guestname = Column(VARCHAR(256), nullable=False)
     mainorder = Column(INTEGER(11), nullable=False)
     detail = Column(INTEGER(11))
     quantity = Column(DECIMAL(precision=10, scale=2))
-    active = Column(TINYINT(4), nullable=False)
-    completed = Column(TINYINT(4), nullable=False)
-    ordertime = Column(DATETIME)
 
-    def __init__(self, orderid=None, guestname=None, mainorder=None, detail=None, quantity=None, active=0, completed=0, order_time=None):
+    def __init__(self, orderid=None, ordertime=None, guestname=None, mainorder=None, detail=None, quantity=None):
         self.orderid = orderid
+        self.ordertime = ordertime
         self.guestname = guestname
         self.mainorder = mainorder
         self.detail = detail
         self.quantity = quantity
-        self.active = active
-        self.completed = completed
-        self.order_time = order_time
 
     def __repr__(self):
         return '<Order %r>' % (self.orderid)

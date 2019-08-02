@@ -19,18 +19,76 @@
  
     <h3 style="text-align:center;">Welcome, Manager!</h3>
    
-       <div class="tabletabs">
-           {% for table in tables %}
-                <a href='/manager/{{table}}'> {{table}} </a>
-           {% endfor %}
-                <a href='/manager/lowthreshold'> Low Threshold </a>
-                <a class='active' href='/manager/reports'> Reports </a>
-           {% if g.user.isadmin %}
-                <a href='/manager/Users'> Users </a>
-           {% endif %}
-       </div>
+    <div class="tabletabs">
+        {% for table in tables %}
+            <a href='/manager/{{table}}'> {{table}} </a>
+        {% endfor %}
+            <a href='/manager/lowthreshold'> Low Threshold </a>
+            <a class='active' href='/manager/reports'> Reports </a>
+        {% if g.user.isadmin %}
+            <a href='/manager/Users'> Users </a>
+        {% endif %}
+    </div>
 
-    <p>Order reports for the following time period:</p>
+    <div style="width:90%; margin-left:auto;">
+        <br>
+        <form action="/manager/reports" method="post">
+            Display orders from 
+            <input type="date" name="startdate" value="{{startdate}}" min="{{mindt[0]}}" max="{{maxdt[0]}}">
+            <input type="time" step="1" name="starttime" value="{{starttime}}">
+            to 
+            <input type="date" name="enddate" value="{{enddate}}" min="{{mindt[0]}}" max="{{maxdt[0]}}">
+            <input type="time" step="1" name="endtime" value="{{endtime}}">
+            <input type="submit" value="View Orders"> 
+        </form>
+    </div>
+
+    <br>
+
+    <table>
+        <tr>
+            <th></th>
+            <th>Time Of Order</th>
+            <th>Order ID</th>
+            <th><pre>  </pre></th>
+            <th>Customer Name</th>
+            <th>Menu Items Ordered</th>
+            <th>Ingredients Used (quantity)</th>
+            <th>Order Total</th>
+            <th>Total Ingredient Cost</th>
+            <th>Profit On Order</th>
+        </tr>
+        {% for oid in orders.keys() %}
+            <tr>
+                <td></td>
+                <td>{{orders[oid]['otime']}}</td>
+                <td>{{oid}}</td>
+                <td><pre>  </pre></td>
+                <td>{{orders[oid]['gname']}}</td>
+                <td>
+                    {% for i in orders[oid]['menuitems'].keys() %}
+                        {{orders[oid]['menuitems'][i]}} <br>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for i in orders[oid]['ingredients'] %}
+                        {{i}} <br>
+                    {% endfor %}
+                </td>
+                <td>{{orders[oid]['ototal']}}</td>
+                <td>{{"{:0.2f}".format(orders[oid]['ingcost'])}}</td>
+                <td>{{"{:0.2f}".format(orders[oid]['ototal'] - orders[oid]['ingcost'])}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <br>
+    <div style="text-emphasis: bold; text-align: center;">
+        <p> Total income from menu items for time period: {{"{:0.2f}".format(total_income)}}</p>
+        <p> Total ingredient cost for time period: {{"{:0.2f}".format(total_ing_cost)}}</p>
+        <p> Total profit for time period: {{"{:0.2f}".format(total_income - total_ing_cost)}}</p>
+    </div>
+    
 
 </body>
 

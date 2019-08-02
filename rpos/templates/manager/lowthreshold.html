@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+ 
+<head>
+    <title>POS Manager Portal</title>
+</head>
+
+<nav style='text-align: right'>
+    {% if g.user %}
+      <span>{{ g.user['username'] }}</span>
+      <a href="{{url_for('manager.portaltable', table='Menu')}}">Portal</a>
+      <a href="{{ url_for('auth.logout') }}">Log Out</a>
+    {% endif %}
+</nav>
+
+<body>
+ 
+    <h3 style="text-align:center;">Welcome, Manager!</h3>
+   
+    <div class="tabletabs">
+        {% for table in tables %}
+            <a href='/manager/{{table}}'> {{table}} </a>
+        {% endfor %}
+            <a class='active' href='/manager/lowthreshold'> Low Threshold </a>
+            <a href='/manager/reports'> Reports </a>
+        {% if g.user.isadmin %}
+            <a href='/manager/Users'> Users </a>
+        {% endif %}
+    </div>
+
+    <table>
+        <tr>
+            <th></th>
+            <th>Description</th>
+            <th>Quantity In Stock</th>
+            <th>Unit</th>
+            <th>Threshold</th>
+        </tr>
+        {% for row in contents %}
+            <tr>
+                <td></td>
+                {% for entry in row %}
+                    <td>
+                        {{entry}}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+
+</body>
+
+</html>
