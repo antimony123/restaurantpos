@@ -87,6 +87,7 @@ def reviewpayorder():
         cur2 = cnx2.cursor()
 
         totalorder = 0.00
+        print("totalorder")
 
         # ---Present Main Order --------------------------------------------------------------
         query = "SELECT description, price from menu WHERE id = %s "
@@ -95,6 +96,7 @@ def reviewpayorder():
         main_order_tuple = (row[0], row[1])                     # send to template
 
         totalorder += float(main_order_tuple[1])
+        print("present main order")
 
         #---Present Main Order Details --------------------------------------------------------
 
@@ -113,6 +115,8 @@ def reviewpayorder():
                 cur2.execute(query, args)
                 cnx2.commit()
 
+        print("present details")
+
         #---Enter into Orders the hidden items  ----------------------------------------------
 
         query = "SELECT ingredient_id, ingredient_quantity from recipes WHERE menu_id = %s AND to_show = 0"
@@ -123,6 +127,8 @@ def reviewpayorder():
             args = (time.strftime('%Y-%m-%d %H:%M:%S'), session['orderid'], session['guestname'], session['mainorder'], r[0], r[1],)
             cur2.execute(query,args)
             cnx2.commit()
+
+        print("enter orders")
 
         #---Present Side Order --------------------------------------------------------------
         
@@ -135,6 +141,8 @@ def reviewpayorder():
             side_tuples.append((r[0], r[1]))
             totalorder = totalorder + float(r[1])
 
+        print("present side order")
+
         #---------Enter Side Order into Orders
 
         query = "SELECT ingredient_id, ingredient_quantity from recipes WHERE menu_id = %s "
@@ -145,6 +153,8 @@ def reviewpayorder():
             args = (time.strftime('%Y-%m-%d %H:%M:%S'), session['orderid'], session['guestname'], session['sideorder'], r[0], r[1],)
             cur2.execute(query, args)
             cnx2.commit()
+
+        print("enter side order")
 
         #---Present Drink order -------------------------------------------------------------
 
@@ -157,6 +167,8 @@ def reviewpayorder():
             drink_tuples.append((r[0], r[1]))
             totalorder = totalorder + float(r[1])
 
+        print("present drink")
+
         #---------Enter Drink order into Orders --------------------------------------------
 
         query = "SELECT ingredient_id, ingredient_quantity from recipes WHERE menu_id = %s "
@@ -168,11 +180,15 @@ def reviewpayorder():
             cur2.execute(query,args)
             cnx2.commit()
 
+        print("enter drink order into orders")
+
         session['main_order_tuple'] = main_order_tuple
         session['detail_list'] = detail_list
         session['side_tuples'] = side_tuples
         session['drink_tuples'] = drink_tuples
         session['totalorder'] = totalorder
+
+        print("sessions initialized")
 
     return render_template("/customer/reviewpayorder.html", guestname=session["guestname"], orderid=session["orderid"], \
         main_order_tuple=main_order_tuple, detail_list=detail_list, side_tuples=side_tuples, drink_tuples=drink_tuples, \
