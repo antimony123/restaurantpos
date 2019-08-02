@@ -89,14 +89,16 @@ class Order(Base):
     mainorder = Column(INTEGER(11), nullable=False)
     detail = Column(INTEGER(11))
     quantity = Column(DECIMAL(precision=10, scale=2))
+    active = Column(INTEGER(1))
 
-    def __init__(self, orderid=None, ordertime=None, guestname=None, mainorder=None, detail=None, quantity=None):
+    def __init__(self, orderid=None, ordertime=None, guestname=None, mainorder=None, detail=None, quantity=None, active=0):
         self.orderid = orderid
         self.ordertime = ordertime
         self.guestname = guestname
         self.mainorder = mainorder
         self.detail = detail
         self.quantity = quantity
+        self.active = active
 
     def __repr__(self):
         return '<Order %r>' % (self.orderid)

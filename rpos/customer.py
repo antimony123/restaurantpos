@@ -8,6 +8,14 @@ from flask import (
 
 # from rpos.db import db_session
 
+try:
+    import simplejson as _json
+except ImportError:
+    try:
+        from itsdangerous import simplejson as _json
+    except ImportError:
+        from itsdangerous import json as _json
+
 import mysql.connector as mysql
 
 import string, random, os, time
@@ -196,6 +204,8 @@ def reviewpayorder():
 
 @bp.route('/acceptorder', methods=["POST", "GET"])
 def acceptorder() :
+
+    print ("no")
     if request.method == "POST" :
         cnx1 = mysql.connect(host="localhost", user="webaccess", passwd="cs160mysql", database="RESMGTDB")
         cnx2 = mysql.connect(host="localhost", user="webaccess", passwd="cs160mysql", database="RESMGTDB")
@@ -215,6 +225,8 @@ def acceptorder() :
             cur2.execute(query, args)
             cnx2.commit()
 
+        print("acivate order")
+
         #---Subtract order from Inventory -----------------------------------
 
         query = "SELECT detail, quantity from orders WHERE orderid = %s AND guestname = %s"
@@ -231,6 +243,7 @@ def acceptorder() :
                 args = (newstock,qua[0])
                 cur3.execute(query,args)
                 cnx3.commit()
+        print("order from inventory")
 
         #---Retrieve timestamp-----------------------------------------------
 
@@ -238,6 +251,8 @@ def acceptorder() :
         args = (session['orderid'], session['guestname'])
         cur1.execute(query, args)
         ordertime = cur1.fetchone()[0]
+
+        print("retrieve timestamp")
 
     return render_template("/customer/receipt.html", guestname=session['guestname'], ordertime=ordertime, orderid=session['orderid'], \
         main_order_tuple=session['main_order_tuple'], detail_list=session['detail_list'], side_tuples=session['side_tuples'], \

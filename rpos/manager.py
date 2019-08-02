@@ -243,7 +243,7 @@ def reports():
     orders = [i for i in db_session.execute(sql)]
 
     for i in orders:
-        _, otime, oid, gname, menuid, ingid, quantity = i
+        _, otime, oid, gname, menuid, ingid, quantity, _ = i
         if oid not in odict.keys():
             odict[oid] = {'otime': otime,
                             'gname': gname,
