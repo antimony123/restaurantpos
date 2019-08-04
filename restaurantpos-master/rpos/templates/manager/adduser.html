@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+ 
+<head>
+    <title>POS Manager Portal</title>
+</head>
+
+<nav style='text-align: right'>
+    {% if g.user %}
+      <span>{{ g.user['username'] }}</span>
+      <a href="{{url_for('manager.portaltable', table='Menu')}}">Portal</a>
+      <a href="{{ url_for('auth.logout') }}">Log Out</a>
+    {% endif %}
+</nav>
+ 
+<body>
+ 
+ <h3 style="text-align:center;">Welcome, Manager!</h3>
+
+    <div class="tabletabs">
+        {% for table in tables %}
+                <a href='/manager/{{table}}'> {{table}} </a>
+        {% endfor %}
+        <a href='/manager/lowthreshold'> Low Threshold </a>
+        <a href='/manager/reports'> Reports </a>
+        <a class='active' href='/manager/Users'> Users </a>
+    </div>
+
+    <div class="tabletabs">
+        <a class='active' href='/manager/AddUser'> Add User </a>
+        <a href='/manager/DelUser'> Delete User </a>
+    </div>
+
+    <h3 style="text-align:center;"> Add Submanager </h3>
+
+    <div style='width:70%; margin-left: auto; margin-right: auto;'>
+        <form method="post" style='width:55%; margin-left: auto; margin-right: auto;'>
+          <label for="username">Desired Username</label>
+          <input style='width:55%; margin-left: auto; margin-right: auto; border:1px solid black;' name="username" id="username" required>
+          <br><br>
+          <label for="password">Desired Password</label>
+          <input style='width:55%; margin-left: auto; margin-right: auto; border:1px solid black;' type="password" name="password" id="password" required>
+          <br><br>
+          <label for="confpass">Confirm Password</label>
+          <input style='width:55%; margin-left: auto; margin-right: auto; border:1px solid black;' type="password" name="confpass" id="confpass" required>
+          <br><br>
+          <input style='width:50%; margin-left: auto; margin-right: auto;' type="submit" value="Submit">
+        </form>
+        {% for message in get_flashed_messages() %}
+        <div class="flash">{{ message }}</div>
+        {% endfor %}
+      </div>
+
+</body>
+
+<footer>
+    <p>&copy; CS160 Restaurant POS </p>
+</footer>
+ 
+</html>

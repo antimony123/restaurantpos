@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+ 
+<head>
+    <title>POS Manager Portal</title>
+</head>
+
+<nav style='text-align: right'>
+    {% if g.user %}
+      <span>{{ g.user['username'] }}</span>
+      <a href="{{url_for('manager.portaltable', table='Menu')}}">Portal</a>
+      <a href="{{ url_for('auth.logout') }}">Log Out</a>
+    {% endif %}
+</nav>
+ 
+<body>
+ 
+ <h3 style="text-align:center;">Welcome, Manager!</h3>
+
+    <div class="tabletabs">
+        {% for table in tables %}
+                <a href='/manager/{{table}}'> {{table}} </a>
+        {% endfor %}
+        <a href='/manager/lowthreshold'> Low Threshold </a>
+        <a href='/manager/reports'> Reports </a>
+        <a class='active' href='/manager/Users'> Users </a>
+    </div>
+
+    <div class="tabletabs">
+        <a href='/manager/AddUser'> Add User </a>
+        <a class='active' href='/manager/DelUser'> Delete User </a>
+    </div>
+
+    <form method='post'>
+        <table>
+            <tr>
+                <th></th>
+                <th>Username</th>
+                <th><pre>                                                                </pre></th>
+            </tr>
+                {% for row in contents %}
+                    {% set outer_loop = loop %}
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="checkbox_{{row[0]}}"></input>
+                        </td>
+                        <td>
+                            {{row[1]}}
+                        </td>
+                        <td></td>
+                    </tr>
+                {% endfor %}
+        </table>
+        <br>
+        <input style="margin-left:2.5%;" type="submit" value="Delete Selected Users" name="delete"></input>
+    </form>
+
+</body>
+
+<footer>
+    <p>&copy; CS160 Restaurant POS </p>
+</footer>
+ 
+</html>

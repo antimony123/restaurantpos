@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<title>Customer Portal - Menu Selection</title>
+
+<style> table, th, td { border: 1px solid black;} </style>
+
+<body>
+      <form action="/customer/customizeorder", method="POST">
+
+        <table>
+          <col width="400"><col width="30">
+          <h3>Main Dishes</h3>
+          <tr><td><h4>Description</h4></td><td><h4>Price</h4></td>
+          {% for entry in food_table %}
+              <tr>
+              <td><input type="radio" name="mainorder" value={{entry[0]}}> {{entry[1]}} </td><td>{{entry[2]}}</td>
+              </tr>
+          {% endfor %}
+        </table>
+
+        <table>
+          <col width="400"><col width="30">
+          <h3>Side Dishes</h3>
+          <tr><td><h4>Description</h4></td><td><h4>Price</h4></td>
+          {% for entry in side_table %}
+              <tr>
+              <td><input type="radio" name="sideorder" value={{entry[0]}}> {{entry[1]}} </td><td>{{entry[2]}}</td>
+              </tr>
+          {% endfor %}
+        </table>
+
+        <table>
+          <col width="400"><col width="30">
+          <h3>Drinks</h3>
+          <tr><td><h4>Description</h4></td><td><h4>Price</h4></td>
+          {% for entry in drink_table %}
+              <tr>
+              <td><input type="radio" name="drinkorder" value={{entry[0]}}> {{entry[1]}} </td><td>{{entry[2]}}</td>
+              </tr>
+            {% endfor %}
+          </table>
+
+        <br><br><input type="submit" value="Customize your Order">
+      </form>
+      <br>
+      <form action="/customer/firststep">
+        <button type="submit">Change your name</button>
+      </form>
+</body>
+
+
+
+<footer>
+    <p>&copy; CS160 Restaurant POS </p>
+</footer>
+
+</html>
