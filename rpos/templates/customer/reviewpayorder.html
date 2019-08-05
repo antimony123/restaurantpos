@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<title>Customer Portal - Review Order</title>
+
 <body>
      <h2>Review and Pay for Your Order</h2>
      <form action="/customer/acceptorder", method="POST">
@@ -29,7 +31,11 @@
     	<h3>Your Total amount today : {{totalorder}}
          
         <br><br><input type="submit" value="Pay for the Order">
-     </form>
+    </form>
+    <br><br>
+    <form action="/customer/customizeorder" method="POST">
+      <button type="submit">Change Order Details</button>
+    </form>
 
 </body>
 

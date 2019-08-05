@@ -6,7 +6,7 @@ LOCK TABLES `ingredients` WRITE;
 INSERT INTO `ingredients` 
 VALUES 
   (1,'Hamburger Bun',0000997.00,'piece',0000000.50, 100),
-  (2,'Beef Patty (1/3 Pound)',0000997.00,'piece',0000001.00, 100),
+  (2,'Beef Patty (1/3 pound)',0000997.00,'piece',0000001.00, 100),
   (3,'Veggie Patty',0000500.00,'piece',0000001.25, 100),
   (4,'American Cheese (slice)',0000499.00,'piece',0000000.25, 100),
   (5,'Cheddar Cheese (slice)',0000500.00,'piece',0000000.25, 100),
@@ -30,7 +30,10 @@ VALUES
   (23,'Root Beer',0000499.00,'bottle',0000000.75, 100),
   (24,'Sprite',0000497.00,'bottle',0000000.75, 100),
   (25,'Ground Coffee Roast',0000749.50,'oz',0000000.75, 100),
-  (26,'Sugar',0000749.50,'oz',0000000.02, 100);
+  (26,'Sugar',0000749.50,'oz',0000000.02, 100),
+  (27, 'Medium Cooked', 1000000000, 'piece', 0.00, 0),
+  (28, 'Well Done Cooked', 1000000000.00, 'piece',0.00, 0),
+  (29, 'Medium Well Cooked', 1000000000.00, 'piece', 0.00, 0);
 UNLOCK TABLES;
 
 --
@@ -77,8 +80,8 @@ INSERT INTO `recipes` VALUES
   (18,2,'Signature Hot Dog',12,'Ketchup',0000000.50,1),
   (19,2,'Signature Hot Dog',13,'Mustard',0000000.50,1),
   (20,3,'Chicken Strips',18,'Chicken Strips',0000003.00,1),
-  (21,4,'French Fries',19,'French Fries',0000008.00,1),
-  (22,5,'Onion Rings',20,'Onion Rings',0000008.00,1),
+  (21,4,'Basket of French Fries',19,'French Fries',0000008.00,1),
+  (22,5,'Basket of Onion Rings',20,'Onion Rings',0000008.00,1),
   (23,6,'Coke',21,'Coke',0000001.00,1),
   (24,7,'Diet Coke',22,'Diet Coke',0000001.00,1),
   (25,8,'Root Beer',23,'Root Beer',0000001.00,1),

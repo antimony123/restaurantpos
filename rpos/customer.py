@@ -36,8 +36,9 @@ def firststep():
 @bp.route('/displaymenu', methods=["POST", "GET"])
 def displaymenu():
     if request.method == "POST" :
-        session['guestname'] = request.form['guestname']
-        session['orderid'] = request.form['orderid']
+        if request.form :
+            session['guestname'] = request.form['guestname']
+            session['orderid'] = request.form['orderid']
 
         cnx = mysql.connect(host="localhost", user="webaccess", passwd="cs160mysql", database="RESMGTDB")
         cur = cnx.cursor()
@@ -56,9 +57,10 @@ def displaymenu():
 @bp.route('/customizeorder', methods=["POST", "GET"])
 def customizeorder():
     if request.method == "POST" :
-        session['mainorder'] = request.form['mainorder']
-        session['sideorder'] = request.form['sideorder']
-        session['drinkorder'] = request.form['drinkorder']
+        if request.form :
+                session['mainorder'] = request.form['mainorder']
+                session['sideorder'] = request.form['sideorder']
+                session['drinkorder'] = request.form['drinkorder']
 
         cnx = mysql.connect(host="localhost", user="webaccess", passwd="cs160mysql", database="RESMGTDB")
         cur = cnx.cursor()
@@ -88,6 +90,7 @@ def customizeorder():
 def reviewpayorder():
     if request.method == "POST" :
         detail_ids = [key for key in request.form.keys()]
+        session['detail_ids'] = detail_ids
 
         cnx1 = mysql.connect(host="localhost", user="webaccess", passwd="cs160mysql", database="RESMGTDB")
         cnx2 = mysql.connect(host="localhost", user="webaccess", passwd="cs160mysql", database="RESMGTDB")
@@ -95,7 +98,6 @@ def reviewpayorder():
         cur2 = cnx2.cursor()
 
         totalorder = 0.00
-        print("totalorder")
 
         # ---Present Main Order --------------------------------------------------------------
         query = "SELECT description, price from menu WHERE id = %s "
@@ -104,7 +106,7 @@ def reviewpayorder():
         main_order_tuple = (row[0], row[1])                     # send to template
 
         totalorder += float(main_order_tuple[1])
-        print("present main order")
+        # print("present main order")
 
         #---Present Main Order Details --------------------------------------------------------
 
@@ -118,26 +120,6 @@ def reviewpayorder():
             for r in cur1 :
                 detail_list.append(r[0])
 
-                query = "INSERT INTO orders (ordertime, orderid, guestname, mainorder, detail, quantity) VALUES (%s, %s, %s, %s, %s, %s)"
-                args = (time.strftime('%Y-%m-%d %H:%M:%S'), session['orderid'], session['guestname'], session['mainorder'], detail, r[1],)
-                cur2.execute(query, args)
-                cnx2.commit()
-
-        print("present details")
-
-        #---Enter into Orders the hidden items  ----------------------------------------------
-
-        query = "SELECT ingredient_id, ingredient_quantity from recipes WHERE menu_id = %s AND to_show = 0"
-        args = (session['mainorder'])
-        cur1.execute(query, (args,))
-        for r in cur1:
-            query = "INSERT INTO orders (ordertime, orderid, guestname, mainorder, detail, quantity) VALUES (%s, %s, %s, %s, %s, %s)"
-            args = (time.strftime('%Y-%m-%d %H:%M:%S'), session['orderid'], session['guestname'], session['mainorder'], r[0], r[1],)
-            cur2.execute(query,args)
-            cnx2.commit()
-
-        print("enter orders")
-
         #---Present Side Order --------------------------------------------------------------
         
         query = "SELECT description, price from menu WHERE id = %s "
@@ -148,21 +130,6 @@ def reviewpayorder():
         for r in cur1:
             side_tuples.append((r[0], r[1]))
             totalorder = totalorder + float(r[1])
-
-        print("present side order")
-
-        #---------Enter Side Order into Orders
-
-        query = "SELECT ingredient_id, ingredient_quantity from recipes WHERE menu_id = %s "
-        args = (session['sideorder'])
-        cur1.execute(query,(args,))
-        for r in cur1:
-            query = "INSERT INTO orders (ordertime, orderid, guestname, mainorder, detail, quantity ) VALUES (%s, %s, %s, %s, %s, %s)"
-            args = (time.strftime('%Y-%m-%d %H:%M:%S'), session['orderid'], session['guestname'], session['sideorder'], r[0], r[1],)
-            cur2.execute(query, args)
-            cnx2.commit()
-
-        print("enter side order")
 
         #---Present Drink order -------------------------------------------------------------
 
@@ -175,28 +142,11 @@ def reviewpayorder():
             drink_tuples.append((r[0], r[1]))
             totalorder = totalorder + float(r[1])
 
-        print("present drink")
-
-        #---------Enter Drink order into Orders --------------------------------------------
-
-        query = "SELECT ingredient_id, ingredient_quantity from recipes WHERE menu_id = %s "
-        args = (session['drinkorder'])
-        cur1.execute(query,(args,))
-        for r in cur1:
-            query = "INSERT INTO orders (ordertime, orderid, guestname, mainorder, detail, quantity ) VALUES (%s, %s, %s, %s, %s, %s)"
-            args = (time.strftime('%Y-%m-%d %H:%M:%S'), session['orderid'], session['guestname'], session['drinkorder'], r[0], r[1],)
-            cur2.execute(query,args)
-            cnx2.commit()
-
-        print("enter drink order into orders")
-
         session['main_order_tuple'] = main_order_tuple
         session['detail_list'] = detail_list
         session['side_tuples'] = side_tuples
         session['drink_tuples'] = drink_tuples
         session['totalorder'] = totalorder
-
-        print("sessions initialized")
 
     return render_template("/customer/reviewpayorder.html", guestname=session["guestname"], orderid=session["orderid"], \
         main_order_tuple=main_order_tuple, detail_list=detail_list, side_tuples=side_tuples, drink_tuples=drink_tuples, \
@@ -205,7 +155,6 @@ def reviewpayorder():
 @bp.route('/acceptorder', methods=["POST", "GET"])
 def acceptorder() :
 
-    print ("no")
     if request.method == "POST" :
         cnx1 = mysql.connect(host="localhost", user="webaccess", passwd="cs160mysql", database="RESMGTDB")
         cnx2 = mysql.connect(host="localhost", user="webaccess", passwd="cs160mysql", database="RESMGTDB")
@@ -214,18 +163,52 @@ def acceptorder() :
         cur2 = cnx2.cursor()
         cur3 = cnx3.cursor()
 
-        #---Activate Order --------------------------------------------------
+        #---Present Main Order Details --------------------------------------------------------
 
-        query = "SELECT id from orders WHERE orderid = %s AND guestname = %s AND active = 0"
-        args = (session['orderid'], session['guestname'])
-        cur1.execute(query, args)
+        for detail in session['detail_ids'] :
+            query = "SELECT ingredient_description, ingredient_quantity FROM recipes WHERE ingredient_id = %s AND menu_id = %s"
+            input_tuple = (detail, session['mainorder'])
+            cur1.execute(query, input_tuple)
+
+            for r in cur1 :
+                query = "INSERT INTO orders (ordertime, orderid, guestname, mainorder, detail, quantity, active) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+                args = (time.strftime('%Y-%m-%d %H:%M:%S'), session['orderid'], session['guestname'], session['mainorder'], detail, r[1], 1,)
+                cur2.execute(query, args)
+                cnx2.commit()
+
+
+        #---Enter into Orders the hidden items  ----------------------------------------------
+
+        query = "SELECT ingredient_id, ingredient_quantity from recipes WHERE menu_id = %s AND to_show = 0"
+        args = (session['mainorder'])
+        cur1.execute(query, (args,))
         for r in cur1:
-            query = "UPDATE orders SET active = %s where id = %s"
-            args = (1, r[0],)
+            query = "INSERT INTO orders (ordertime, orderid, guestname, mainorder, detail, quantity, active) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            args = (time.strftime('%Y-%m-%d %H:%M:%S'), session['orderid'], session['guestname'], session['mainorder'], r[0], r[1], 1,)
+            cur2.execute(query,args)
+            cnx2.commit()
+
+        #---------Enter Side Order into Orders-----------------------------------------------
+
+        query = "SELECT ingredient_id, ingredient_quantity from recipes WHERE menu_id = %s "
+        args = (session['sideorder'])
+        cur1.execute(query,(args,))
+        for r in cur1:
+            query = "INSERT INTO orders (ordertime, orderid, guestname, mainorder, detail, quantity, active) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            args = (time.strftime('%Y-%m-%d %H:%M:%S'), session['orderid'], session['guestname'], session['sideorder'], r[0], r[1], 1,)
             cur2.execute(query, args)
             cnx2.commit()
 
-        print("acivate order")
+        #---------Enter Drink order into Orders --------------------------------------------
+
+        query = "SELECT ingredient_id, ingredient_quantity from recipes WHERE menu_id = %s "
+        args = (session['drinkorder'])
+        cur1.execute(query,(args,))
+        for r in cur1:
+            query = "INSERT INTO orders (ordertime, orderid, guestname, mainorder, detail, quantity, active) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            args = (time.strftime('%Y-%m-%d %H:%M:%S'), session['orderid'], session['guestname'], session['drinkorder'], r[0], r[1], 1,)
+            cur2.execute(query,args)
+            cnx2.commit()
 
         #---Subtract order from Inventory -----------------------------------
 
@@ -238,22 +221,15 @@ def acceptorder() :
             cur2.execute(queryin, (args,))
             for qua in cur2:
                 newstock = qua[1] - r[1]
-#                print(newstock)
                 query = "UPDATE ingredients SET stock = %s where id = %s"
                 args = (newstock,qua[0])
                 cur3.execute(query,args)
                 cnx3.commit()
-        print("order from inventory")
 
         #---Retrieve timestamp-----------------------------------------------
 
-        query = "SELECT ordertime FROM orders WHERE orderid = %s AND guestname = %s"
-        args = (session['orderid'], session['guestname'])
-        cur1.execute(query, args)
-        ordertime = cur1.fetchone()[0]
-
-        print("retrieve timestamp")
+        ordertime = time.strftime('%Y-%m-%d %H:%M:%S')
 
     return render_template("/customer/receipt.html", guestname=session['guestname'], ordertime=ordertime, orderid=session['orderid'], \
         main_order_tuple=session['main_order_tuple'], detail_list=session['detail_list'], side_tuples=session['side_tuples'], \
-drink_tuples=session['drink_tuples'], totalorder=session['totalorder'])
+        drink_tuples=session['drink_tuples'], totalorder=session['totalorder'])

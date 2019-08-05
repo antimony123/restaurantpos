@@ -217,12 +217,16 @@ def reports():
     odict = {}
     total_ing_cost = 0
     total_income = 0
+    mindt = [datetime.datetime.now(), datetime.datetime.now()]
+    maxdt = [datetime.datetime.now(), datetime.datetime.now()]
 
     dt = [i[0] for i in db_session.execute("SELECT ordertime FROM orders;")]
-    d, t = str(sorted(dt)[0]).split(' ')
-    mindt = (d, t)
-    d, t = str(sorted(dt)[-1]).split(' ')
-    maxdt = (d, t)
+    
+    if len(dt) > 0:
+        d, t = str(sorted(dt)[0]).split(' ')
+        mindt = (d, t)
+        d, t = str(sorted(dt)[-1]).split(' ')
+        maxdt = (d, t)
 
     startdate = mindt[0]
     starttime = mindt[1]

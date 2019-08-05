@@ -1,39 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<title>Customer Portal - Customize Order</title>
 
 <body>
 
   <form action="/customer/reviewpayorder", method="POST">
-  <h2>Customize Your Order</h2>
-  <h4>OrderID : {{orderid}} </h4>
+    <h2>Customize Your Order</h2>
+    <h4>OrderID : {{orderid}} </h4>
 
-  <h3>{{guestname}}, how would you like your {{maindish}} today?</h3>
+    <h3>{{guestname}}, how would you like your {{maindish}} today?</h3>
 
 <!-- ---Present Maindish Option with--------------------------------------------------------------- -->
-  <table style="width:100%">
+    <table style="width:100%">
 
-  {% for r in detailorder %}
-      <tr><td><input type="checkbox" name="detailorder" value={{r[0]}}>{{r[1]}}</td></tr>
-  {% endfor %}
-  </table>
-  <br>--------------------------------------------------<br><br>
-  <h4>
-  <!-- ---Present Side Order -------------------------------------------------------------- -->
+      {% for r in detailorder %}
+        <tr><td><input type="checkbox" name={{r[0]}} value={{r[0]}}>{{r[1]}}</td></tr>
+      {% endfor %}
+    </table>
+    <br>--------------------------------------------------<br><br>
+    <h4>
+<!-- ---Present Side Order -------------------------------------------------------------- -->
 
-  Your Side Order today : {{sidedish}}
-  <br>--------------------------------------------------<br><br>
+    Your Side Order today : {{sidedish}}
+    <br>--------------------------------------------------<br><br>
 
 <!--#---Present Drink order ------------------------------------------------------------- -->
 
-  Your Drink Order today: {{drink}}
-  <br>--------------------------------------------------<br><br>
+    Your Drink Order today: {{drink}}
+    <br>--------------------------------------------------<br><br>
 <!--#----------------------------------------------------------------------------------- -->
 
-  <br><br><input type="submit" value="Review your Order & Pay">
+    <br><br><input type="submit" value="Review your Order & Pay">
 
+  </form>
+  <br><br>
+  <form action="/customer/displaymenu" method="POST">
+    <button type="submit">Change your order</button>
   </form>
 
 <!-- #---------------------------------------------------------------------------------------------------------------- -->
-  </body>
-  </html>
+</body>
+
+</html>
