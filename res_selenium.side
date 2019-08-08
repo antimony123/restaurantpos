@@ -1,0 +1,196 @@
+{
+  "id": "6905722f-87e8-4bcd-9368-4b33e69f6dc3",
+  "version": "2.0",
+  "name": "alphacs160",
+  "url": "http://alphacs160.eastus2.cloudapp.azure.com:3010",
+  "tests": [{
+    "id": "1fdc5bdc-1e9b-4d15-babb-3d4641e8e6c6",
+    "name": "Untitled",
+    "commands": [{
+      "id": "8fe4c951-9469-4385-b165-f9ed4c0cb1bb",
+      "comment": "",
+      "command": "open",
+      "target": "/fd/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "5798bad9-5d6a-44b8-91b1-3c0f5e8e5c45",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "980x692",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "80590991-23f4-46e4-b230-b77753617651",
+      "comment": "",
+      "command": "click",
+      "target": "css=input",
+      "targets": [
+        ["css=input", "css:finder"],
+        ["xpath=//input[@value='Start']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "3378f0c5-0b11-4c1b-9688-b2bae408dedc",
+      "comment": "",
+      "command": "click",
+      "target": "name=guestname",
+      "targets": [
+        ["name=guestname", "name"],
+        ["css=input:nth-child(1)", "css:finder"],
+        ["xpath=//input[@name='guestname']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "91e616e8-8cfe-4ee9-a5ec-463a3236a393",
+      "comment": "",
+      "command": "click",
+      "target": "name=guestname",
+      "targets": [
+        ["name=guestname", "name"],
+        ["css=input:nth-child(1)", "css:finder"],
+        ["xpath=//input[@name='guestname']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ba87a631-4765-40e7-8276-2b0096a097fc",
+      "comment": "",
+      "command": "type",
+      "target": "name=guestname",
+      "targets": [
+        ["name=guestname", "name"],
+        ["css=input:nth-child(1)", "css:finder"],
+        ["xpath=//input[@name='guestname']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "testa"
+    }, {
+      "id": "d0689e78-dfea-471b-a1d1-2ee43877a4c9",
+      "comment": "",
+      "command": "click",
+      "target": "css=input:nth-child(6)",
+      "targets": [
+        ["css=input:nth-child(6)", "css:finder"],
+        ["xpath=//input[@value='Press Here to View and Select from our Tasty Menu']", "xpath:attributes"],
+        ["xpath=//input[3]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "fe015d38-099f-42b4-81c6-d5c24ded40f1",
+      "comment": "",
+      "command": "click",
+      "target": "name=mainorder",
+      "targets": [
+        ["name=mainorder", "name"],
+        ["css=table:nth-child(2) tr:nth-child(2) input", "css:finder"],
+        ["xpath=//input[@name='mainorder']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b630df9d-f5fd-42d4-b21f-58769a73e135",
+      "comment": "",
+      "command": "click",
+      "target": "name=sideorder",
+      "targets": [
+        ["name=sideorder", "name"],
+        ["css=table:nth-child(4) tr:nth-child(2) input", "css:finder"],
+        ["xpath=//input[@name='sideorder']", "xpath:attributes"],
+        ["xpath=//table[2]/tbody/tr[2]/td/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "24e8ee8d-3dd5-4bea-be61-a5f742171b98",
+      "comment": "",
+      "command": "click",
+      "target": "name=drinkorder",
+      "targets": [
+        ["name=drinkorder", "name"],
+        ["css=table:nth-child(6) tr:nth-child(2) input", "css:finder"],
+        ["xpath=//input[@name='drinkorder']", "xpath:attributes"],
+        ["xpath=//table[3]/tbody/tr[2]/td/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "99002b4a-7fef-4578-9eaf-4a98330e01a6",
+      "comment": "",
+      "command": "click",
+      "target": "css=input:nth-child(15)",
+      "targets": [
+        ["css=input:nth-child(15)", "css:finder"],
+        ["xpath=//input[@value='Customize your Order']", "xpath:attributes"],
+        ["xpath=//input[3]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "bd99fb58-c2ec-4f55-ae22-6bb747187839",
+      "comment": "",
+      "command": "click",
+      "target": "name=detailorder",
+      "targets": [
+        ["name=detailorder", "name"],
+        ["css=tr:nth-child(1) input", "css:finder"],
+        ["xpath=//input[@name='detailorder']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0bbc0a28-05d7-456e-9062-f8160d9ffb25",
+      "comment": "",
+      "command": "click",
+      "target": "css=tr:nth-child(2) input",
+      "targets": [
+        ["css=tr:nth-child(2) input", "css:finder"],
+        ["xpath=(//input[@name='detailorder'])[2]", "xpath:attributes"],
+        ["xpath=//tr[2]/td/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "8a21ce1a-4ac2-497b-ad5a-607b8b0b4bb9",
+      "comment": "",
+      "command": "click",
+      "target": "css=tr:nth-child(3) input",
+      "targets": [
+        ["css=tr:nth-child(3) input", "css:finder"],
+        ["xpath=(//input[@name='detailorder'])[3]", "xpath:attributes"],
+        ["xpath=//tr[3]/td/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "4ecce9b6-dfc9-4a38-888c-6d16d254a8db",
+      "comment": "",
+      "command": "click",
+      "target": "css=input:nth-child(14)",
+      "targets": [
+        ["css=input:nth-child(14)", "css:finder"],
+        ["xpath=//input[@value='Review your Order & Pay']", "xpath:attributes"],
+        ["xpath=//input[6]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ad66fbb5-9746-4c33-a558-673463def9a1",
+      "comment": "",
+      "command": "click",
+      "target": "css=input:nth-child(6)",
+      "targets": [
+        ["css=input:nth-child(6)", "css:finder"],
+        ["xpath=//input[@value='Pay for the Order']", "xpath:attributes"],
+        ["xpath=//input[4]", "xpath:position"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "ff57a1b5-a425-46cd-9f7d-07f0bfe0fe62",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["1fdc5bdc-1e9b-4d15-babb-3d4641e8e6c6"]
+  }],
+  "urls": ["http://alphacs160.eastus2.cloudapp.azure.com:3010/"],
+  "plugins": []
+}
