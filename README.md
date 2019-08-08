@@ -1,5 +1,49 @@
 # restaurantpos
-POS system for restaurants, with inventory tracking.
+POS system for restaurants and small businesses, with inventory tracking and profit reporting.
+
+### Requirements
+
+In order to install restaurantpos, you must already have or install the following:
+
+mysql server
+python 3.5 or greater
+pip for python 3
+
+pip installations:
+pip install flask
+pip install mysql
+pip install mysql-client
+pip install pymysql
+pip install sqlalchemy
+pip install bcrypt
+
+### Creating the database
+
+Log in to your mysql server.
+Create a new database called RESMGTDB:
+```
+create database RESMGTDB;
+```
+Create a new user, webaccess, with permissions to modify RESMGTDB:
+```
+use mysql;
+CREATE USER 'webaccess'@'localhost' IDENTIFIED BY 'cs160mysql';
+GRANT ALL PRIVILEGES ON RESMGTDB.* TO 'webaccess'@'localhost';
+```
+
+Now you have the necessary setup to run the application.
+
+### Running the app locally
+
+In a terminal, run the following:
+
+cd /path/to/restaurantpos
+export FLASK_APP=rpos
+flask run                   # this will run it on localhost:5000
+
+------------------------------
+
+In case you need to import or export your database from the cloud server, the following sections describe how to do so.
 
 ### How to import the database
 Assumptions made before running the commands:
